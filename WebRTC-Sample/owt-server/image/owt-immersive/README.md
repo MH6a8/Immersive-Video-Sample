@@ -1,4 +1,5 @@
 # Immersive-Video-Sample/WebRTC-Sample/owt-server镜像构建说明
+
 文件路径：Immersive-Video-Sample/WebRTC-Sample/owt-server/image/owt-immersive/
 
 ## 文件说明
@@ -46,7 +47,7 @@
     + 在当前目录下git获取ffmpeg和owt-server，注意使用自己的账户并指定分支，例如
     + su liangma4
     + git clone -b n4.1_owt_patched git@git.iflytek.com:HY_MetaLab/FFmpeg.git
-    + git clone git@git.iflytek.com:HY_MetaLab/ImmersiveVideo-owt-server.git  
+    + git clone -b 360-video git@git.iflytek.com:HY_MetaLab/ImmersiveVideo-owt-server.git  
     
 2.  构建基础镜像
 
@@ -62,15 +63,35 @@
     + 构建时间约为22min
     + 如果需要修改生成的镜像名称，则编辑脚本的IMAGE字段和BASETAG字段，其中BASETAG字段与基础镜像保持一致  
 
+4.  查看构建成功的镜像
+
+    ```
+    docker images
+
+    # REPOSITORY(镜像名称)                                 TAG(标签)              IMAGE ID(镜像ID)    
+    # xeon-centos76-service-owt-immersive-base-gitlab      base                  a500b6db4c65       
+    # xeon-centos76-service-owt-immersive-develop-gitlab   develop               59f32b4a2034
+    ```
+
 ## 运行容器
 
 1.  由镜像生成容器
 
     + 不做端口映射使用如下命令（可能产生端口冲突）
     + docker run --net=host --privileged=true -it 镜像ID bash
-    + 需要端口映射则用
+    + 需要端口映射则用（暂时有问题）
     + docker run -p 3010-3014:3000-3004 -p 3400:3300 -p 8099:8080 -p 5772:5672 -p 27667:27009 -it 镜像ID bash
-    + 其中冒号左边为宿主机端口，也就是外界访问的端口，冒号右边是容器中使用的端口  
+    + 其中冒号左边为宿主机端口，也就是外界访问的端口，冒号右边是容器中使用的端口
+    + 3000-3004 3300 8080 5672 27009 为容器中需要暴露的端口号
+    ```
+    # 退出容器使用（在容器内执行）
+    exit
+    # 重新进入容器使用（在宿主机执行）
+    docker exec -it 容器ID bash
+    # 查看所有容器使用（在宿主机执行）
+    docker ps -a
+    # CONTAINER ID   IMAGE                       COMMAND    
+    # 17e1684a6829   aad925ca7c80                "bash"
 
 2.  运行服务器
 
