@@ -1,4 +1,5 @@
 # ImmersiveVideo/OMAF-Sample/server镜像构建说明
+
 文件路径：ImmersiveVideo/OMAF-Sample/server/
 
 ## 文件说明
@@ -41,9 +42,11 @@
       包括了基础镜像Dockerfile.base需要的所有第三方库文件，除了ffmpeg
       
 ## 构建镜像
+
 可同时参考官网README.md
 
 1.  在当前文件夹安装自己的ffmpeg，例如
+
     ```
     su liangma4
     git clone -b n4.3.1_omaf_patched git@git.iflytek.com:HY_MetaLab/FFmpeg.git
@@ -52,25 +55,28 @@
 2.  如需修改镜像名称，编辑deploy.sh中的IMAGEPREFIX和VERSION字段
 
 3.  执行cmake命令
+
     ```bash
         cd path_to/Immersive-Video-Sample/OMAF-Sample/server
         mkdir build && cd build
         cmake .. -DHTTP_PROXY=<proxy> # proxy is optional
         make build -j $(nproc)
         docker image ls
-        # REPOSITORY                                  TAG
-        # immersive-server-gitlab-runtime             v4
-        # immersive-server-gitlab-base                v4
+        # REPOSITORY                                  TAG    IMAGE ID
+        # immersive-server-gitlab-runtime             v4     262be0c96b47
+        # immersive-server-gitlab-base                v4     aad925ca7c80
     ``` 
 
 ## 运行容器
 
 1.  由镜像构建容器，可使用端口映射
+
     ```
-    docker run --privileged=true --user root --name=容器名称 -p 30071:1483 -p 30072:8080 -it 镜像ID bash
+    docker run --privileged=true --user root --name=容器名称 -p 30071:443 -p 30072:8080 -it 镜像ID bash
     ```
 
 2.  运行nginx服务器
+
     ```
     cd /usr/local/nginx/conf/
     ./configure.sh CN Shanghai A B C D E@F.com
@@ -78,6 +84,7 @@
     ```
 
 3.  执行run.sh，使用ffmpeg推流（命令待修改，使用SVT-HEVC编码器在debug中）
+
     ```
     cd /home/immersive/Sample-Videos && ./run.sh <RES> <TYPE>
     # <RES>:[4K,8K] <TYPE>:[LIVE,VOD]
